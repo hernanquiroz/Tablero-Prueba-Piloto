@@ -54,7 +54,7 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900 leading-tight">Dashboard SPA-CSC</h1>
-                        <p class="text-xs text-slate-500">Análisis Estadístico de Consumo de SPA y Clima Social Escolar</p>
+                        <p class="text-xs text-slate-500">Análisis Estadístico de Consumo de SPA y Clima Social Universitario</p>
                     </div>
                 </div>
                 
@@ -430,8 +430,20 @@
 
     <!-- JavaScript Charts & Logic -->
     <script>
-        // Chart instances dictionary to avoid duplication errors
-        let charts = {};
+        // Dictionary to track active chart instances
+        const chartInstances = {};
+
+        // Helper to safely destroy and re-create charts without flickering
+        function renderChart(canvasId, type, config) {
+            if (chartInstances[canvasId]) {
+                chartInstances[canvasId].destroy();
+            }
+            const canvas = document.getElementById(canvasId);
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                chartInstances[canvasId] = new Chart(ctx, { type, ...config });
+            }
+        }
 
         // TAB Switching Logic
         function switchTab(tabId) {
@@ -444,32 +456,31 @@
             if (targetContent && targetTab) {
                 targetContent.classList.remove('hidden');
                 targetTab.classList.add('active');
+
+                // Render charts for the active tab when tab is visible
+                setTimeout(() => {
+                    if (tabId === 'resumen') {
+                        initRadarChart();
+                        initDoughnutChart();
+                    } else if (tabId === 'dimensiones') {
+                        initClimaChart();
+                        initFactoresChart();
+                    } else if (tabId === 'estadisticas') {
+                        initSustanciasChart();
+                        initEdadChart();
+                    }
+                }, 50);
             }
         }
 
-        // Initialize All Charts safely
+        // Initialization on Load
         window.onload = function() {
-            initRadarChart();
-            initDoughnutChart();
-            initClimaChart();
-            initFactoresChart();
-            initSustanciasChart();
-            initEdadChart();
+            switchTab('resumen');
         };
-
-        // Helper to safely destroy chart if exists
-        function destroyChart(chartKey) {
-            if (charts[chartKey]) {
-                charts[chartKey].destroy();
-            }
-        }
 
         // 1. Radar Chart
         function initRadarChart() {
-            destroyChart('radar');
-            const ctx = document.getElementById('chartDimensionsRadar').getContext('2d');
-            charts.radar = new Chart(ctx, {
-                type: 'radar',
+            renderChart('chartDimensionsRadar', 'radar', {
                 data: {
                     labels: ['Convivencia Campus', 'Clima Universitario', 'Apoyo Social/Familiar', 'Estrés / Riesgo', 'Pertenencia', 'Prevención SPA'],
                     datasets: [{
@@ -490,7 +501,7 @@
                             grid: { color: '#e2e8f0' },
                             suggestedMin: 0,
                             suggestedMax: 5,
-                            ticks: { stepSize: 1, textStrokeColor: 'transparent' }
+                            ticks: { stepSize: 1 }
                         }
                     },
                     plugins: { legend: { display: false } }
@@ -500,10 +511,7 @@
 
         // 2. Doughnut Risk Chart
         function initDoughnutChart() {
-            destroyChart('doughnut');
-            const ctx = document.getElementById('chartRiskDoughnut').getContext('2d');
-            charts.doughnut = new Chart(ctx, {
-                type: 'doughnut',
+            renderChart('chartRiskDoughnut', 'doughnut', {
                 data: {
                     labels: ['Bajo Riesgo', 'Riesgo Medio', 'Riesgo Alto'],
                     datasets: [{
@@ -523,10 +531,7 @@
 
         // 3. Clima Bar Chart
         function initClimaChart() {
-            destroyChart('clima');
-            const ctx = document.getElementById('chartClimaBar').getContext('2d');
-            charts.clima = new Chart(ctx, {
-                type: 'bar',
+            renderChart('chartClimaBar', 'bar', {
                 data: {
                     labels: ['Seguridad Campus', 'Relación Docentes/Tutores', 'Normas Institucionales', 'Resolución Conflictos'],
                     datasets: [{
@@ -547,10 +552,7 @@
 
         // 4. Factores Bar Chart
         function initFactoresChart() {
-            destroyChart('factores');
-            const ctx = document.getElementById('chartFactoresBar').getContext('2d');
-            charts.factores = new Chart(ctx, {
-                type: 'bar',
+            renderChart('chartFactoresBar', 'bar', {
                 data: {
                     labels: ['Red Apoyo Social', 'Pertenencia Univ.', 'Estrés Académico High', 'Exposición Oferta SPA'],
                     datasets: [{
@@ -571,10 +573,7 @@
 
         // 5. Sustancias Bar Chart
         function initSustanciasChart() {
-            destroyChart('sustancias');
-            const ctx = document.getElementById('chartSustanciasBar').getContext('2d');
-            charts.sustancias = new Chart(ctx, {
-                type: 'bar',
+            renderChart('chartSustanciasBar', 'bar', {
                 data: {
                     labels: ['Alcohol', 'Vapeo / Nicotina', 'Cannabis', 'Cigarrillo Tradicional', 'Otras SPA'],
                     datasets: [{
@@ -595,10 +594,7 @@
 
         // 6. Edad Pie Chart
         function initEdadChart() {
-            destroyChart('edad');
-            const ctx = document.getElementById('chartEdadPie').getContext('2d');
-            charts.edad = new Chart(ctx, {
-                type: 'pie',
+            renderChart('chartEdadPie', 'pie', {
                 data: {
                     labels: ['< 16 años', '16 - 17 años', '18 - 20 años', '21+ años'],
                     datasets: [{
