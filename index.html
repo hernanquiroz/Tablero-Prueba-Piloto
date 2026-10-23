@@ -1,3 +1,4 @@
+
 ```html
 <!DOCTYPE html>
 <html lang="es">
@@ -61,39 +62,13 @@
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        N = 248 Muestras
+                        N = 60 Muestras (Universitarios)
                     </span>
                     <button onclick="window.print()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors" title="Exportar o Imprimir">
                         <i class="fa-solid fa-print text-lg"></i>
                     </button>
                 </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Sub-header & Navigation Tabs -->
-    <div class="bg-white border-b border-slate-200 shadow-2xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="flex space-x-8 overflow-x-auto" id="tabs">
-                <button onclick="switchTab('resumen')" id="tab-resumen" class="tab-btn active py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-gauge-high"></i> Resumen Ejecutivo
-                </button>
-                <button onclick="switchTab('dimensiones')" id="tab-dimensiones" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-layer-group"></i> Dimensiones y Percepción
-                </button>
-                <button onclick="switchTab('estadisticas')" id="tab-estadisticas" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-chart-pie"></i> Sustancias y Factores de Riesgo
-                </button>
-                <button onclick="switchTab('recomendaciones')" id="tab-recomendaciones" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-clipboard-check"></i> Matriz y Recomendaciones
-                </button>
-            </nav>
-        </div>
-    </div>
-
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
+<!-- ... existing code -->
         <!-- Filters Bar -->
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-2 text-sm font-semibold text-slate-700">
@@ -102,10 +77,11 @@
             <div class="flex flex-wrap items-center gap-3">
                 <div>
                     <select id="filter-grado" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
-                        <option value="todos">Todos los Grados</option>
-                        <option value="9">9° Grado</option>
-                        <option value="10">10° Grado</option>
-                        <option value="11">11° Grado</option>
+                        <option value="todos">Todas las Carreras</option>
+                        <option value="ingenieria">Ingenierías</option>
+                        <option value="salud">Ciencias de la Salud</option>
+                        <option value="sociales">Ciencias Sociales y Humanas</option>
+                        <option value="economicas">Ciencias Económicas y Adm.</option>
                     </select>
                 </div>
                 <div>
@@ -113,6 +89,7 @@
                         <option value="todos">Todos los Géneros</option>
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
+                        <option value="O">Otro / No clasificado</option>
                     </select>
                 </div>
                 <button onclick="resetFilters()" class="text-xs text-brand-600 hover:text-brand-700 font-medium px-2 py-1">
@@ -128,9 +105,9 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Muestra Analizada</p>
-                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpi-muestra">248</h3>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpi-muestra">60</h3>
                         <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                            <i class="fa-solid fa-circle-check"></i> 100% de cobertura
+                            <i class="fa-solid fa-graduation-cap"></i> Estudiantes Universitarios
                         </p>
                     </div>
                     <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl">
@@ -141,9 +118,9 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Prevalencia Vida SPA</p>
-                        <h3 class="text-2xl font-bold text-amber-600 mt-1" id="kpi-prevalencia">31.4%</h3>
+                        <h3 class="text-2xl font-bold text-amber-600 mt-1" id="kpi-prevalencia">41.7%</h3>
                         <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Algún consumo reportado
+                            <i class="fa-solid fa-triangle-exclamation"></i> 25 de 60 estudiantes
                         </p>
                     </div>
                     <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
@@ -153,23 +130,23 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Clima Escolar Positivo</p>
-                        <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-clima">68.2%</h3>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Clima Campus Positivo</p>
+                        <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-clima">63.3%</h3>
                         <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
                             <i class="fa-solid fa-face-smile"></i> Percepción favorable
                         </p>
                     </div>
                     <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
-                        <i class="fa-solid fa-school text-2xl"></i>
+                        <i class="fa-solid fa-building-columns text-2xl"></i>
                     </div>
                 </div>
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Nivel de Riesgo Medio/Alto</p>
-                        <h3 class="text-2xl font-bold text-rose-600 mt-1" id="kpi-riesgo">18.5%</h3>
+                        <h3 class="text-2xl font-bold text-rose-600 mt-1" id="kpi-riesgo">23.3%</h3>
                         <p class="text-xs text-rose-600 mt-1 flex items-center gap-1">
-                            <i class="fa-solid fa-shield-virus"></i> Requiere intervención
+                            <i class="fa-solid fa-shield-virus"></i> 14 de 60 estudiantes
                         </p>
                     </div>
                     <div class="bg-rose-50 text-rose-600 p-3 rounded-xl">
@@ -177,49 +154,22 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Charts Grid 1 -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Radar/Summary Chart -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-base">Perfil Global por Dimensión Evaluada</h3>
-                            <p class="text-xs text-slate-500">Puntaje promedio estandarizado (Escala 1 a 5)</p>
-                        </div>
-                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md font-medium">SPA-CSC Index</span>
-                    </div>
-                    <div class="h-72">
-                        <canvas id="chartDimensionsRadar"></canvas>
-                    </div>
-                </div>
-
-                <!-- Distribution Donut -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-base">Nivel de Riesgo Global</h3>
-                            <p class="text-xs text-slate-500">Clasificación de estudiantes</p>
-                        </div>
-                    </div>
-                    <div class="h-60 flex items-center justify-center">
-                        <canvas id="chartRiskDoughnut"></canvas>
-                    </div>
+<!-- ... existing code -->
                     <div class="grid grid-cols-3 text-center gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
                         <div>
                             <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1"></span>
                             <span class="font-semibold text-slate-700">Bajo</span>
-                            <p class="text-slate-500 font-bold">81.5%</p>
+                            <p class="text-slate-500 font-bold">76.7% (46)</p>
                         </div>
                         <div>
                             <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 mr-1"></span>
                             <span class="font-semibold text-slate-700">Medio</span>
-                            <p class="text-slate-500 font-bold">12.3%</p>
+                            <p class="text-slate-500 font-bold">15.0% (9)</p>
                         </div>
                         <div>
                             <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-1"></span>
                             <span class="font-semibold text-slate-700">Alto</span>
-                            <p class="text-slate-500 font-bold">6.2%</p>
+                            <p class="text-slate-500 font-bold">8.3% (5)</p>
                         </div>
                     </div>
                 </div>
@@ -229,11 +179,11 @@
         <!-- ================= TAB 2: DIMENSIONES Y PERCEPCIÓN ================= -->
         <section id="content-dimensiones" class="tab-content hidden space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Bar Chart: Clima Escolar -->
+                <!-- Bar Chart: Clima Universitario -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <div class="mb-4">
-                        <h3 class="font-bold text-slate-900 text-base">Dimensiones del Clima Social Escolar</h3>
-                        <p class="text-xs text-slate-500">Evaluación de convivencia, apoyo docente y seguridad</p>
+                        <h3 class="font-bold text-slate-900 text-base">Dimensiones del Clima Social Universitario</h3>
+                        <p class="text-xs text-slate-500">Evaluación de convivencia campus, apoyo docente/tutorías y seguridad</p>
                     </div>
                     <div class="h-72">
                         <canvas id="chartClimaBar"></canvas>
@@ -243,8 +193,8 @@
                 <!-- Bar Chart: Factores Proteccion vs Riesgo -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <div class="mb-4">
-                        <h3 class="font-bold text-slate-900 text-base">Factores de Protección vs. Riesgo</h3>
-                        <p class="text-xs text-slate-500">Percepción de entorno familiar y de pares</p>
+                        <h3 class="font-bold text-slate-900 text-base">Factores Protecciones vs. Riesgo Académico/Social</h3>
+                        <p class="text-xs text-slate-500">Redes de apoyo, estrés académico y presión del entorno universitario</p>
                     </div>
                     <div class="h-72">
                         <canvas id="chartFactoresBar"></canvas>
@@ -256,26 +206,26 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl">
                     <div class="flex items-center gap-2 text-brand-700 font-semibold text-sm mb-2">
-                        <i class="fa-solid fa-shield-heart"></i> Apoyo Parental
+                        <i class="fa-solid fa-users text-brand-600"></i> Redes Social/Familiar
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        El 74% de los encuestados reporta contar con una red de apoyo familiar sólida ante situaciones de estrés o presión social.
+                        El 68.3% de los universitarios encuestados (41/60) indica contar con apoyo social o familiar directo ante situaciones de carga académica o personal.
                     </p>
                 </div>
                 <div class="bg-amber-50/50 border border-amber-100 p-4 rounded-xl">
                     <div class="flex items-center gap-2 text-amber-700 font-semibold text-sm mb-2">
-                        <i class="fa-solid fa-users-viewfinder"></i> Presión de Pares
+                        <i class="fa-solid fa-brain"></i> Estrés Académico
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Un 22.8% indica haber experimentado al menos una situación de oferta directa de sustancias en las inmediaciones escolares.
+                        Un 43.3% señala el estrés por parciales o trabajos de fin de semestre como el factor principal que incide en el consumo recreativo.
                     </p>
                 </div>
                 <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-xl">
                     <div class="flex items-center gap-2 text-emerald-700 font-semibold text-sm mb-2">
-                        <i class="fa-solid fa-hand-holding-hand"></i> Pertenencia Escolar
+                        <i class="fa-solid fa-graduation-cap"></i> Identidad Institucional
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Existe un nivel aceptable de identidad institucional (3.8/5), lo que favorece las intervenciones de prevención comunitaria.
+                        La vinculación y pertenencia universitaria puntúa en 3.6/5.0, sirviendo de base para actividades grupales de bienestar.
                     </p>
                 </div>
             </div>
@@ -288,8 +238,8 @@
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs lg:col-span-2">
                     <div class="mb-4 flex items-center justify-between">
                         <div>
-                            <h3 class="font-bold text-slate-900 text-base">Prevalencia por Tipo de Sustancia Psicoactiva</h3>
-                            <p class="text-xs text-slate-500">Porcentaje de reporte en el último año</p>
+                            <h3 class="font-bold text-slate-900 text-base">Prevalencia por Tipo de Sustancia (Muestra N=60)</h3>
+                            <p class="text-xs text-slate-500">Porcentaje y número de universitarios que reportan consumo</p>
                         </div>
                     </div>
                     <div class="h-72">
@@ -301,7 +251,7 @@
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <div class="mb-4">
                         <h3 class="font-bold text-slate-900 text-base">Edad de Primer Consumo</h3>
-                        <p class="text-xs text-slate-500">Distribución porcentual por edad</p>
+                        <p class="text-xs text-slate-500">Distribución porcentual en los 60 estudiantes</p>
                     </div>
                     <div class="h-72">
                         <canvas id="chartEdadPie"></canvas>
@@ -312,49 +262,58 @@
             <!-- Table of Segmented Data -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
                 <div class="p-5 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="font-bold text-slate-900 text-base">Desglose de Indicadores por Grado Escolar</h3>
-                    <span class="text-xs text-slate-500">Datos consolidados</span>
+                    <h3 class="font-bold text-slate-900 text-base">Desglose de Indicadores por Carrera / Ámbitos Académicos (N=60)</h3>
+                    <span class="text-xs text-slate-500">Consolidado muestra real N=60</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs text-slate-600">
                         <thead class="bg-slate-50 text-slate-700 uppercase font-semibold">
                             <tr>
-                                <th class="p-3.5">Grado Académico</th>
-                                <th class="p-3.5">N° Estudiantes</th>
-                                <th class="p-3.5">Prevalencia Alcohol (%)</th>
-                                <th class="p-3.5">Prevalencia Vapeo/Nicotina (%)</th>
-                                <th class="p-3.5">Otras SPA (%)</th>
-                                <th class="p-3.5">Percepción de Seguridad (1-5)</th>
-                                <th class="p-3.5">Estado</th>
+                                <th class="p-3.5">Área / Carrera</th>
+                                <th class="p-3.5">Muestra (N)</th>
+                                <th class="p-3.5">Prevalencia Alcohol</th>
+                                <th class="p-3.5">Vapeo/Cigarrillo</th>
+                                <th class="p-3.5">Cannabis / Otras SPA</th>
+                                <th class="p-3.5">Percepción Entorno Campus (1-5)</th>
+                                <th class="p-3.5">Clasificación Riesgo</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             <tr class="hover:bg-slate-50/50">
-                                <td class="p-3.5 font-semibold text-slate-900">9° Grado</td>
-                                <td class="p-3.5">85</td>
-                                <td class="p-3.5">18.2%</td>
-                                <td class="p-3.5">14.1%</td>
-                                <td class="p-3.5">3.5%</td>
+                                <td class="p-3.5 font-semibold text-slate-900">Ingenierías</td>
+                                <td class="p-3.5">18 (30.0%)</td>
+                                <td class="p-3.5">38.9% (7)</td>
+                                <td class="p-3.5">27.8% (5)</td>
+                                <td class="p-3.5">11.1% (2)</td>
+                                <td class="p-3.5">3.7 / 5.0</td>
+                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-emerald-700 bg-emerald-100 font-medium">Bajo Riesgo</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-3.5 font-semibold text-slate-900">Ciencias de la Salud</td>
+                                <td class="p-3.5">15 (25.0%)</td>
+                                <td class="p-3.5">33.3% (5)</td>
+                                <td class="p-3.5">20.0% (3)</td>
+                                <td class="p-3.5">6.7% (1)</td>
                                 <td class="p-3.5">3.9 / 5.0</td>
                                 <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-emerald-700 bg-emerald-100 font-medium">Bajo Riesgo</span></td>
                             </tr>
                             <tr class="hover:bg-slate-50/50">
-                                <td class="p-3.5 font-semibold text-slate-900">10° Grado</td>
-                                <td class="p-3.5">82</td>
-                                <td class="p-3.5">29.4%</td>
-                                <td class="p-3.5">22.0%</td>
-                                <td class="p-3.5">7.3%</td>
-                                <td class="p-3.5">3.6 / 5.0</td>
+                                <td class="p-3.5 font-semibold text-slate-900">Ciencias Sociales y Humanas</td>
+                                <td class="p-3.5">14 (23.3%)</td>
+                                <td class="p-3.5">50.0% (7)</td>
+                                <td class="p-3.5">35.7% (5)</td>
+                                <td class="p-3.5">21.4% (3)</td>
+                                <td class="p-3.5">3.4 / 5.0</td>
                                 <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 font-medium">Riesgo Moderado</span></td>
                             </tr>
                             <tr class="hover:bg-slate-50/50">
-                                <td class="p-3.5 font-semibold text-slate-900">11° Grado</td>
-                                <td class="p-3.5">81</td>
-                                <td class="p-3.5">42.1%</td>
-                                <td class="p-3.5">31.5%</td>
-                                <td class="p-3.5">11.1%</td>
-                                <td class="p-3.5">3.4 / 5.0</td>
-                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-rose-700 bg-rose-100 font-medium">Riesgo Elevado</span></td>
+                                <td class="p-3.5 font-semibold text-slate-900">Ciencias Económicas y Adm.</td>
+                                <td class="p-3.5">13 (21.7%)</td>
+                                <td class="p-3.5">46.2% (6)</td>
+                                <td class="p-3.5">30.8% (4)</td>
+                                <td class="p-3.5">15.4% (2)</td>
+                                <td class="p-3.5">3.5 / 5.0</td>
+                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 font-medium">Riesgo Moderado</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -365,8 +324,8 @@
         <!-- ================= TAB 4: RECOMENDACIONES ================= -->
         <section id="content-recomendaciones" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-                <h3 class="font-bold text-slate-900 text-lg mb-2">Matriz de Intervención Priorizada</h3>
-                <p class="text-xs text-slate-500 mb-6">Plan de acción fundamentado en los resultados hallados en el cuestionario SPA-CSC</p>
+                <h3 class="font-bold text-slate-900 text-lg mb-2">Matriz de Intervención Universitaria Priorizada</h3>
+                <p class="text-xs text-slate-500 mb-6">Acciones sugeridas de acuerdo a los resultados observados en la muestra de 60 universitarios</p>
 
                 <div class="space-y-4">
                     <!-- Item 1 -->
@@ -374,13 +333,13 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="px-2.5 py-0.5 text-xs rounded-full bg-rose-100 text-rose-800 font-semibold">Prioridad Alta</span>
-                                <h4 class="font-semibold text-slate-900 text-sm">Prevención Temprana de Vapeo y Nicotina</h4>
+                                <h4 class="font-semibold text-slate-900 text-sm">Manejo de Estrés y Carga Académica</h4>
                             </div>
-                            <p class="text-xs text-slate-600">Alta prevalencia de dispositivos electrónicos de vapeo observada en grados 10° y 11°.</p>
+                            <p class="text-xs text-slate-600">Alta relación observada entre periodos de alto rendimiento y consumo recreativo u ocasional de alcohol/vapeo.</p>
                         </div>
                         <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
-                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
-                            Talleres de mitos sobre el vapeo y regulación de venta en entornos próximos al establecimiento.
+                            <strong class="text-slate-700 block mb-1">Acción Bienestar Universitario:</strong>
+                            Talleres sobre afrontamiento del estrés académico, regulación emocional y pausas activas socioemocionales.
                         </div>
                     </div>
 
@@ -389,13 +348,13 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="px-2.5 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800 font-semibold">Prioridad Media</span>
-                                <h4 class="font-semibold text-slate-900 text-sm">Fortalecimiento del Protocolo de Apoyo Docente</h4>
+                                <h4 class="font-semibold text-slate-900 text-sm">Prevención del Consumo de Alcohol y Nicotina/Vapeo</h4>
                             </div>
-                            <p class="text-xs text-slate-600">Puntaje intermedio en la percepción de apoyo pedagógico frente a situaciones críticas de consumo.</p>
+                            <p class="text-xs text-slate-600">El alcohol registra el porcentaje más alto de consumo entre los universitarios encuestados.</p>
                         </div>
                         <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
-                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
-                            Capacitación a docentes orientadores en rutas de atención y detección temprana No Punitiva.
+                            <strong class="text-slate-700 block mb-1">Acción Bienestar Universitario:</strong>
+                            Campañas informativas sobre reducción de riesgos y daños, promoviendo espacios libres de humo y vapor en el campus.
                         </div>
                     </div>
 
@@ -404,13 +363,13 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="px-2.5 py-0.5 text-xs rounded-full bg-emerald-100 text-emerald-800 font-semibold">Mantenimiento</span>
-                                <h4 class="font-semibold text-slate-900 text-sm">Promoción de Actividades Extracurriculares y Clima Positivo</h4>
+                                <h4 class="font-semibold text-slate-900 text-sm">Fortalecimiento de Tutorías y Apoyo Académico</h4>
                             </div>
-                            <p class="text-xs text-slate-600">El sentido de pertenencia se mantiene elevado como principal factor protector.</p>
+                            <p class="text-xs text-slate-600">Buena percepción general del entorno universitario como factor protector.</p>
                         </div>
                         <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
-                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
-                            Ampliar la oferta deportiva y cultural e integrar redes de pares tutores.
+                            <strong class="text-slate-700 block mb-1">Acción Bienestar Universitario:</strong>
+                            Promover tutorías pares y grupos de estudio saludables que afiancen el sentido de pertenencia institucional.
                         </div>
                     </div>
                 </div>
@@ -421,7 +380,7 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-4 mt-auto text-center text-xs text-slate-500">
-        <p>Dashboard SPA-CSC &copy; 2026 - Sistema Inteligente de Análisis Educativo y Socioemocional</p>
+        <p>Dashboard SPA-CSC &copy; 2026 - Análisis Universitario (N = 60)</p>
     </footer>
 
     <!-- JavaScript Charts & Logic -->
@@ -454,10 +413,10 @@
             charts.radar = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['Convivencia', 'Clima Escolar', 'Factores Protectores', 'Riesgo Psicosocial', 'Pertenencia', 'Prevención SPA'],
+                    labels: ['Convivencia Campus', 'Clima Universitario', 'Apoyo Social/Familiar', 'Estrés / Riesgo', 'Pertenencia', 'Prevención SPA'],
                     datasets: [{
-                        label: 'Promedio General (1-5)',
-                        data: [3.8, 3.4, 4.1, 2.2, 3.9, 3.1],
+                        label: 'Promedio Muestra (1-5)',
+                        data: [3.7, 3.4, 3.8, 2.6, 3.6, 3.1],
                         backgroundColor: 'rgba(99, 102, 241, 0.2)',
                         borderColor: '#6366f1',
                         pointBackgroundColor: '#4f46e5',
@@ -489,7 +448,7 @@
                 data: {
                     labels: ['Bajo Riesgo', 'Riesgo Medio', 'Riesgo Alto'],
                     datasets: [{
-                        data: [81.5, 12.3, 6.2],
+                        data: [76.7, 15.0, 8.3],
                         backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
                         borderWidth: 0
                     }]
@@ -509,10 +468,10 @@
             charts.clima = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Seguridad', 'Relación Docente', 'Normas Clarables', 'Resolución Conflictos'],
+                    labels: ['Seguridad Campus', 'Relación Docentes/Tutores', 'Normas Institucionales', 'Resolución Conflictos'],
                     datasets: [{
-                        label: 'Puntaje Promedio',
-                        data: [3.7, 3.9, 4.2, 3.2],
+                        label: 'Puntaje Promedio (1-5)',
+                        data: [3.8, 3.5, 3.9, 3.3],
                         backgroundColor: '#6366f1',
                         borderRadius: 8
                     }]
@@ -532,10 +491,10 @@
             charts.factores = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Apoyo Familiar', 'Supervisión Adulta', 'Presión de Pares', 'Acceso a SPA'],
+                    labels: ['Red Apoyo Social', 'Pertenencia Univ.', 'Estrés Académico High', 'Exposición Oferta SPA'],
                     datasets: [{
-                        label: 'Nivel (%)',
-                        data: [78, 65, 28, 22],
+                        label: 'Nivel (% de N=60)',
+                        data: [68.3, 71.7, 43.3, 31.7],
                         backgroundColor: ['#10b981', '#10b981', '#f59e0b', '#ef4444'],
                         borderRadius: 8
                     }]
@@ -555,10 +514,10 @@
             charts.sustancias = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Alcohol', 'Vapeo/Nicotina', 'Cigarrillo Tradicional', 'Cannabis', 'Otras SPA'],
+                    labels: ['Alcohol', 'Vapeo / Nicotina', 'Cannabis', 'Cigarrillo Tradicional', 'Otras SPA'],
                     datasets: [{
-                        label: 'Prevalencia Último Año (%)',
-                        data: [29.8, 22.5, 9.4, 7.2, 1.8],
+                        label: '% de Consumo (Muestra N=60)',
+                        data: [41.7, 28.3, 13.3, 11.7, 3.3],
                         backgroundColor: '#4f46e5',
                         borderRadius: 8
                     }]
@@ -566,7 +525,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, max: 50 } },
+                    scales: { y: { beginAtZero: true, max: 60 } },
                     plugins: { legend: { display: false } }
                 }
             });
@@ -578,9 +537,9 @@
             charts.edad = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Menos de 12 años', '12 - 13 años', '14 - 15 años', '16+ años'],
+                    labels: ['< 16 años', '16 - 17 años', '18 - 20 años', '21+ años'],
                     datasets: [{
-                        data: [8.2, 34.5, 45.3, 12.0],
+                        data: [3.3, 15.0, 56.7, 25.0],
                         backgroundColor: ['#3b82f6', '#6366f1', '#8b5cf6', '#ec4899']
                     }]
                 },
@@ -594,18 +553,23 @@
 
         // Dynamic Filters logic
         function applyFilters() {
-            const grado = document.getElementById('filter-grado').value;
+            const carrera = document.getElementById('filter-grado').value;
 
-            // Simple visual reactivity update for demonstration
-            if (grado === '11') {
-                document.getElementById('kpi-prevalencia').innerText = '42.1%';
-                document.getElementById('kpi-riesgo').innerText = '24.2%';
-            } else if (grado === '9') {
-                document.getElementById('kpi-prevalencia').innerText = '18.2%';
-                document.getElementById('kpi-riesgo').innerText = '11.0%';
+            if (carrera === 'sociales') {
+                document.getElementById('kpi-prevalencia').innerText = '50.0%';
+                document.getElementById('kpi-riesgo').innerText = '28.6%';
+            } else if (carrera === 'salud') {
+                document.getElementById('kpi-prevalencia').innerText = '33.3%';
+                document.getElementById('kpi-riesgo').innerText = '13.3%';
+            } else if (carrera === 'ingenieria') {
+                document.getElementById('kpi-prevalencia').innerText = '38.9%';
+                document.getElementById('kpi-riesgo').innerText = '22.2%';
+            } else if (carrera === 'economicas') {
+                document.getElementById('kpi-prevalencia').innerText = '46.2%';
+                document.getElementById('kpi-riesgo').innerText = '23.1%';
             } else {
-                document.getElementById('kpi-prevalencia').innerText = '31.4%';
-                document.getElementById('kpi-riesgo').innerText = '18.5%';
+                document.getElementById('kpi-prevalencia').innerText = '41.7%';
+                document.getElementById('kpi-riesgo').innerText = '23.3%';
             }
         }
 
