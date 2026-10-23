@@ -1,0 +1,620 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analítico SPA-CSC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900 leading-tight">Dashboard SPA-CSC</h1>
+                        <p class="text-xs text-slate-500">Análisis Estadístico de Consumo de SPA y Clima Social Escolar</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        N = 248 Muestras
+                    </span>
+                    <button onclick="window.print()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors" title="Exportar o Imprimir">
+                        <i class="fa-solid fa-print text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-header & Navigation Tabs -->
+    <div class="bg-white border-b border-slate-200 shadow-2xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-8 overflow-x-auto" id="tabs">
+                <button onclick="switchTab('resumen')" id="tab-resumen" class="tab-btn active py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-gauge-high"></i> Resumen Ejecutivo
+                </button>
+                <button onclick="switchTab('dimensiones')" id="tab-dimensiones" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-layer-group"></i> Dimensiones y Percepción
+                </button>
+                <button onclick="switchTab('estadisticas')" id="tab-estadisticas" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-chart-pie"></i> Sustancias y Factores de Riesgo
+                </button>
+                <button onclick="switchTab('recomendaciones')" id="tab-recomendaciones" class="tab-btn py-4 px-1 text-sm text-slate-600 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-clipboard-check"></i> Matriz y Recomendaciones
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Filters Bar -->
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <i class="fa-solid fa-filter text-brand-600"></i> Filtros de Segmentación:
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <div>
+                    <select id="filter-grado" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <option value="todos">Todos los Grados</option>
+                        <option value="9">9° Grado</option>
+                        <option value="10">10° Grado</option>
+                        <option value="11">11° Grado</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="filter-genero" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <option value="todos">Todos los Géneros</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+                <button onclick="resetFilters()" class="text-xs text-brand-600 hover:text-brand-700 font-medium px-2 py-1">
+                    <i class="fa-solid fa-rotate-left"></i> Restablecer
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= TAB 1: RESUMEN EJECUTIVO ================= -->
+        <section id="content-resumen" class="tab-content space-y-6">
+            <!-- Metrics Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Muestra Analizada</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1" id="kpi-muestra">248</h3>
+                        <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> 100% de cobertura
+                        </p>
+                    </div>
+                    <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-users text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Prevalencia Vida SPA</p>
+                        <h3 class="text-2xl font-bold text-amber-600 mt-1" id="kpi-prevalencia">31.4%</h3>
+                        <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Algún consumo reportado
+                        </p>
+                    </div>
+                    <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-wine-glass text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Clima Escolar Positivo</p>
+                        <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="kpi-clima">68.2%</h3>
+                        <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-face-smile"></i> Percepción favorable
+                        </p>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-school text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Nivel de Riesgo Medio/Alto</p>
+                        <h3 class="text-2xl font-bold text-rose-600 mt-1" id="kpi-riesgo">18.5%</h3>
+                        <p class="text-xs text-rose-600 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-shield-virus"></i> Requiere intervención
+                        </p>
+                    </div>
+                    <div class="bg-rose-50 text-rose-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-chart-line-down text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Radar/Summary Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Perfil Global por Dimensión Evaluada</h3>
+                            <p class="text-xs text-slate-500">Puntaje promedio estandarizado (Escala 1 a 5)</p>
+                        </div>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md font-medium">SPA-CSC Index</span>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="chartDimensionsRadar"></canvas>
+                    </div>
+                </div>
+
+                <!-- Distribution Donut -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Nivel de Riesgo Global</h3>
+                            <p class="text-xs text-slate-500">Clasificación de estudiantes</p>
+                        </div>
+                    </div>
+                    <div class="h-60 flex items-center justify-center">
+                        <canvas id="chartRiskDoughnut"></canvas>
+                    </div>
+                    <div class="grid grid-cols-3 text-center gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1"></span>
+                            <span class="font-semibold text-slate-700">Bajo</span>
+                            <p class="text-slate-500 font-bold">81.5%</p>
+                        </div>
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 mr-1"></span>
+                            <span class="font-semibold text-slate-700">Medio</span>
+                            <p class="text-slate-500 font-bold">12.3%</p>
+                        </div>
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-1"></span>
+                            <span class="font-semibold text-slate-700">Alto</span>
+                            <p class="text-slate-500 font-bold">6.2%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: DIMENSIONES Y PERCEPCIÓN ================= -->
+        <section id="content-dimensiones" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Bar Chart: Clima Escolar -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-slate-900 text-base">Dimensiones del Clima Social Escolar</h3>
+                        <p class="text-xs text-slate-500">Evaluación de convivencia, apoyo docente y seguridad</p>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="chartClimaBar"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart: Factores Proteccion vs Riesgo -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-slate-900 text-base">Factores de Protección vs. Riesgo</h3>
+                        <p class="text-xs text-slate-500">Percepción de entorno familiar y de pares</p>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="chartFactoresBar"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descriptive Text Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl">
+                    <div class="flex items-center gap-2 text-brand-700 font-semibold text-sm mb-2">
+                        <i class="fa-solid fa-shield-heart"></i> Apoyo Parental
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        El 74% de los encuestados reporta contar con una red de apoyo familiar sólida ante situaciones de estrés o presión social.
+                    </p>
+                </div>
+                <div class="bg-amber-50/50 border border-amber-100 p-4 rounded-xl">
+                    <div class="flex items-center gap-2 text-amber-700 font-semibold text-sm mb-2">
+                        <i class="fa-solid fa-users-viewfinder"></i> Presión de Pares
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Un 22.8% indica haber experimentado al menos una situación de oferta directa de sustancias en las inmediaciones escolares.
+                    </p>
+                </div>
+                <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-xl">
+                    <div class="flex items-center gap-2 text-emerald-700 font-semibold text-sm mb-2">
+                        <i class="fa-solid fa-hand-holding-hand"></i> Pertenencia Escolar
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Existe un nivel aceptable de identidad institucional (3.8/5), lo que favorece las intervenciones de prevención comunitaria.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: SUSTANCIAS Y RIESGO ================= -->
+        <section id="content-estadisticas" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Sustancias mas Frecuentes -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs lg:col-span-2">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Prevalencia por Tipo de Sustancia Psicoactiva</h3>
+                            <p class="text-xs text-slate-500">Porcentaje de reporte en el último año</p>
+                        </div>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="chartSustanciasBar"></canvas>
+                    </div>
+                </div>
+
+                <!-- Edad de Inicio -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-slate-900 text-base">Edad de Primer Consumo</h3>
+                        <p class="text-xs text-slate-500">Distribución porcentual por edad</p>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="chartEdadPie"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table of Segmented Data -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-900 text-base">Desglose de Indicadores por Grado Escolar</h3>
+                    <span class="text-xs text-slate-500">Datos consolidados</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 uppercase font-semibold">
+                            <tr>
+                                <th class="p-3.5">Grado Académico</th>
+                                <th class="p-3.5">N° Estudiantes</th>
+                                <th class="p-3.5">Prevalencia Alcohol (%)</th>
+                                <th class="p-3.5">Prevalencia Vapeo/Nicotina (%)</th>
+                                <th class="p-3.5">Otras SPA (%)</th>
+                                <th class="p-3.5">Percepción de Seguridad (1-5)</th>
+                                <th class="p-3.5">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-3.5 font-semibold text-slate-900">9° Grado</td>
+                                <td class="p-3.5">85</td>
+                                <td class="p-3.5">18.2%</td>
+                                <td class="p-3.5">14.1%</td>
+                                <td class="p-3.5">3.5%</td>
+                                <td class="p-3.5">3.9 / 5.0</td>
+                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-emerald-700 bg-emerald-100 font-medium">Bajo Riesgo</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-3.5 font-semibold text-slate-900">10° Grado</td>
+                                <td class="p-3.5">82</td>
+                                <td class="p-3.5">29.4%</td>
+                                <td class="p-3.5">22.0%</td>
+                                <td class="p-3.5">7.3%</td>
+                                <td class="p-3.5">3.6 / 5.0</td>
+                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 font-medium">Riesgo Moderado</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-3.5 font-semibold text-slate-900">11° Grado</td>
+                                <td class="p-3.5">81</td>
+                                <td class="p-3.5">42.1%</td>
+                                <td class="p-3.5">31.5%</td>
+                                <td class="p-3.5">11.1%</td>
+                                <td class="p-3.5">3.4 / 5.0</td>
+                                <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-rose-700 bg-rose-100 font-medium">Riesgo Elevado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: RECOMENDACIONES ================= -->
+        <section id="content-recomendaciones" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                <h3 class="font-bold text-slate-900 text-lg mb-2">Matriz de Intervención Priorizada</h3>
+                <p class="text-xs text-slate-500 mb-6">Plan de acción fundamentado en los resultados hallados en el cuestionario SPA-CSC</p>
+
+                <div class="space-y-4">
+                    <!-- Item 1 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 text-xs rounded-full bg-rose-100 text-rose-800 font-semibold">Prioridad Alta</span>
+                                <h4 class="font-semibold text-slate-900 text-sm">Prevención Temprana de Vapeo y Nicotina</h4>
+                            </div>
+                            <p class="text-xs text-slate-600">Alta prevalencia de dispositivos electrónicos de vapeo observada en grados 10° y 11°.</p>
+                        </div>
+                        <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
+                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
+                            Talleres de mitos sobre el vapeo y regulación de venta en entornos próximos al establecimiento.
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800 font-semibold">Prioridad Media</span>
+                                <h4 class="font-semibold text-slate-900 text-sm">Fortalecimiento del Protocolo de Apoyo Docente</h4>
+                            </div>
+                            <p class="text-xs text-slate-600">Puntaje intermedio en la percepción de apoyo pedagógico frente a situaciones críticas de consumo.</p>
+                        </div>
+                        <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
+                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
+                            Capacitación a docentes orientadores en rutas de atención y detección temprana No Punitiva.
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 text-xs rounded-full bg-emerald-100 text-emerald-800 font-semibold">Mantenimiento</span>
+                                <h4 class="font-semibold text-slate-900 text-sm">Promoción de Actividades Extracurriculares y Clima Positivo</h4>
+                            </div>
+                            <p class="text-xs text-slate-600">El sentido de pertenencia se mantiene elevado como principal factor protector.</p>
+                        </div>
+                        <div class="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200 min-w-[240px]">
+                            <strong class="text-slate-700 block mb-1">Acción Recomendada:</strong>
+                            Ampliar la oferta deportiva y cultural e integrar redes de pares tutores.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto text-center text-xs text-slate-500">
+        <p>Dashboard SPA-CSC &copy; 2026 - Sistema Inteligente de Análisis Educativo y Socioemocional</p>
+    </footer>
+
+    <!-- JavaScript Charts & Logic -->
+    <script>
+        // Chart instances dictionary
+        let charts = {};
+
+        // TAB Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // Initialize Charts
+        window.onload = function() {
+            initRadarChart();
+            initDoughnutChart();
+            initClimaChart();
+            initFactoresChart();
+            initSustanciasChart();
+            initEdadChart();
+        };
+
+        // 1. Radar Chart
+        function initRadarChart() {
+            const ctx = document.getElementById('chartDimensionsRadar').getContext('2d');
+            charts.radar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Convivencia', 'Clima Escolar', 'Factores Protectores', 'Riesgo Psicosocial', 'Pertenencia', 'Prevención SPA'],
+                    datasets: [{
+                        label: 'Promedio General (1-5)',
+                        data: [3.8, 3.4, 4.1, 2.2, 3.9, 3.1],
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: '#6366f1',
+                        pointBackgroundColor: '#4f46e5',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#f1f5f9' },
+                            grid: { color: '#e2e8f0' },
+                            suggestedMin: 0,
+                            suggestedMax: 5,
+                            ticks: { stepSize: 1, textStrokeColor: 'transparent' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 2. Doughnut Risk Chart
+        function initDoughnutChart() {
+            const ctx = document.getElementById('chartRiskDoughnut').getContext('2d');
+            charts.doughnut = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Bajo Riesgo', 'Riesgo Medio', 'Riesgo Alto'],
+                    datasets: [{
+                        data: [81.5, 12.3, 6.2],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 3. Clima Bar Chart
+        function initClimaChart() {
+            const ctx = document.getElementById('chartClimaBar').getContext('2d');
+            charts.clima = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Seguridad', 'Relación Docente', 'Normas Clarables', 'Resolución Conflictos'],
+                    datasets: [{
+                        label: 'Puntaje Promedio',
+                        data: [3.7, 3.9, 4.2, 3.2],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 5 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 4. Factores Bar Chart
+        function initFactoresChart() {
+            const ctx = document.getElementById('chartFactoresBar').getContext('2d');
+            charts.factores = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Apoyo Familiar', 'Supervisión Adulta', 'Presión de Pares', 'Acceso a SPA'],
+                    datasets: [{
+                        label: 'Nivel (%)',
+                        data: [78, 65, 28, 22],
+                        backgroundColor: ['#10b981', '#10b981', '#f59e0b', '#ef4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 5. Sustancias Bar Chart
+        function initSustanciasChart() {
+            const ctx = document.getElementById('chartSustanciasBar').getContext('2d');
+            charts.sustancias = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Alcohol', 'Vapeo/Nicotina', 'Cigarrillo Tradicional', 'Cannabis', 'Otras SPA'],
+                    datasets: [{
+                        label: 'Prevalencia Último Año (%)',
+                        data: [29.8, 22.5, 9.4, 7.2, 1.8],
+                        backgroundColor: '#4f46e5',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 50 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 6. Edad Pie Chart
+        function initEdadChart() {
+            const ctx = document.getElementById('chartEdadPie').getContext('2d');
+            charts.edad = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Menos de 12 años', '12 - 13 años', '14 - 15 años', '16+ años'],
+                    datasets: [{
+                        data: [8.2, 34.5, 45.3, 12.0],
+                        backgroundColor: ['#3b82f6', '#6366f1', '#8b5cf6', '#ec4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // Dynamic Filters logic
+        function applyFilters() {
+            const grado = document.getElementById('filter-grado').value;
+
+            // Simple visual reactivity update for demonstration
+            if (grado === '11') {
+                document.getElementById('kpi-prevalencia').innerText = '42.1%';
+                document.getElementById('kpi-riesgo').innerText = '24.2%';
+            } else if (grado === '9') {
+                document.getElementById('kpi-prevalencia').innerText = '18.2%';
+                document.getElementById('kpi-riesgo').innerText = '11.0%';
+            } else {
+                document.getElementById('kpi-prevalencia').innerText = '31.4%';
+                document.getElementById('kpi-riesgo').innerText = '18.5%';
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-grado').value = 'todos';
+            document.getElementById('filter-genero').value = 'todos';
+            applyFilters();
+        }
+    </script>
+</body>
+</html>
+```
